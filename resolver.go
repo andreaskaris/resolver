@@ -38,13 +38,15 @@ func getResolver(dnsServer string) *net.Resolver {
 	} else if len(splitted) > 2 {
 		panic("Invalid dnsServer")
 	}
+	// https://stackoverflow.com/questions/59889882/specifying-dns-server-for-lookup-in-go
 	return &net.Resolver{
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
 			d := net.Dialer{
 				Timeout: time.Millisecond * time.Duration(10000),
 			}
-			return d.DialContext(ctx, network, dnsServer)
+			//return d.DialContext(ctx, network, dnsServer)
+			return d.DialContext(ctx, "udp", dnsServer)
 		},
 	}
 }
